@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails, Principal {
+public class AppUser implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -3,9 +3,9 @@ package io.rachidassouani.booksocialnetworkapi.auth;
 import io.rachidassouani.booksocialnetworkapi.email.EmailService;
 import io.rachidassouani.booksocialnetworkapi.email.EmailTemplateName;
 import io.rachidassouani.booksocialnetworkapi.role.RoleRepository;
+import io.rachidassouani.booksocialnetworkapi.user.AppUser;
 import io.rachidassouani.booksocialnetworkapi.user.Token;
 import io.rachidassouani.booksocialnetworkapi.user.TokenRepository;
-import io.rachidassouani.booksocialnetworkapi.user.User;
 import io.rachidassouani.booksocialnetworkapi.user.UserRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,11 +37,10 @@ public class AuthenticationService {
     }
 
     public void register(RegistrationRequest registrationRequest) throws MessagingException {
-
         var role = roleRepository.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role USER not found"));
 
-        User userToSave = new User();
+        AppUser userToSave = new AppUser();
         userToSave.setFirstName(registrationRequest.getFirstName());
         userToSave.setLastName(registrationRequest.getLastName());
         userToSave.setEmail(registrationRequest.getEmail());
@@ -50,17 +49,18 @@ public class AuthenticationService {
         userToSave.setEnabled(false);
         userToSave.setRoles(List.of(role));
 
-        User savedUser = userRepository.save(userToSave);
+        AppUser savedUser = userRepository.save(userToSave);
 
         // send validation email
         sendValidationEmail(savedUser);
+
     }
 
-    private void sendValidationEmail(User user) throws MessagingException {
-        var savedToken = saveToken(user);
+    private void sendValidationEmail(AppUser appUser) throws MessagingException {
+        var savedToken = saveToken(appUser);
         emailService.sendEmail(
-                user.getEmail(),
-                user.getFullName(),
+                appUser.getEmail(),
+                appUser.getFullName(),
                 "Account Activation",
                 EmailTemplateName.ACTIVATE_ACCOUNT,
                 activateAccountUrl,
@@ -69,10 +69,10 @@ public class AuthenticationService {
 
     }
 
-    private String saveToken(User user) {
+    private String saveToken(AppUser appUser) {
         String token = generateToken();
         Token tokenToSave = new Token();
-        tokenToSave.setUser(user);
+        tokenToSave.setUser(appUser);
         tokenToSave.setToken(token);
         tokenToSave.setCreatedAt(LocalDateTime.now());
         tokenToSave.setExpiresAt(LocalDateTime.now().plusHours(1));

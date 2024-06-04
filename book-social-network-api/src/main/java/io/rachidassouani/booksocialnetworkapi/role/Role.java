@@ -1,7 +1,7 @@
 package io.rachidassouani.booksocialnetworkapi.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.rachidassouani.booksocialnetworkapi.user.User;
+import io.rachidassouani.booksocialnetworkapi.user.AppUser;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,7 +23,7 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore
-    private List<User> users;
+    private List<AppUser> appUsers;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -49,12 +49,12 @@ public class Role {
         this.name = name;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<AppUser> getAppUsers() {
+        return appUsers;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setAppUsers(List<AppUser> appUsers) {
+        this.appUsers = appUsers;
     }
 
     public LocalDateTime getCreatedDate() {

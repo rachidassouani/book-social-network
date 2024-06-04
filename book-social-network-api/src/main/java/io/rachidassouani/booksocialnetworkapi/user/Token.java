@@ -11,6 +11,7 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String token;
 
     private LocalDateTime createdAt;
@@ -19,9 +20,9 @@ public class Token {
 
     private LocalDateTime validatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appUserId", nullable = false)
+    private AppUser appUser;
 
     public Long getId() {
         return id;
@@ -63,11 +64,11 @@ public class Token {
         this.validatedAt = validatedAt;
     }
 
-    public User getUser() {
-        return user;
+    public AppUser getUser() {
+        return appUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 }
