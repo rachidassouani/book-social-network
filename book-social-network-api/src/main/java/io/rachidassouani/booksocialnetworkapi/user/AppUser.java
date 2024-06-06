@@ -1,5 +1,7 @@
 package io.rachidassouani.booksocialnetworkapi.user;
 
+import io.rachidassouani.booksocialnetworkapi.book.Book;
+import io.rachidassouani.booksocialnetworkapi.history.BookTransactionHistory;
 import io.rachidassouani.booksocialnetworkapi.role.Role;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -42,6 +44,9 @@ public class AppUser implements UserDetails, Principal {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
@@ -49,6 +54,9 @@ public class AppUser implements UserDetails, Principal {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> histories;
 
     public boolean isAccountLocked() {
         return accountLocked;
@@ -175,5 +183,13 @@ public class AppUser implements UserDetails, Principal {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 }
