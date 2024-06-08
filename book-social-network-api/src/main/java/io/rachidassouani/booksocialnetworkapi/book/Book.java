@@ -84,4 +84,42 @@ public class Book extends BaseEntity {
     public void setShareable(boolean shareable) {
         this.shareable = shareable;
     }
+
+    public AppUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(AppUser owner) {
+        this.owner = owner;
+    }
+
+    public List<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(List<Feedback> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
+
+    public List<BookTransactionHistory> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<BookTransactionHistory> histories) {
+        this.histories = histories;
+    }
+
+    public double calculateRate() {
+        if (feedbacks == null || feedbacks.isEmpty()) {
+            return 0.0;
+        }
+        var rate = feedbacks
+                .stream()
+                .mapToDouble(feedback -> feedback.getNote())
+                .average()
+                .orElse(0.0);
+
+        double boundedRate = Math.round(rate * 10.0) / 10.0;
+        return boundedRate;
+    }
 }
